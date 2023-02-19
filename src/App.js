@@ -1,5 +1,4 @@
 import { Component } from "react";
-import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
@@ -8,39 +7,35 @@ class App extends Component {
        super(props);
 
        this.state = {
-           name: {
-               firstName: 'Maxim',
-               lastName: 'Pavlov'
-           },
-           company: 'ZTM'
+           monsters: [
+               {
+                   id: 1,
+                   name: 'Max',
+               },
+               {
+                   id: 2,
+                   name: 'Ira',
+               },
+               {
+                   id: 3,
+                   name: 'Val'
+               }
+           ]
        }
    }
 
     render() {
         return (
             <div className="App">
-                <header className="App-header">
-                    <img src={logo} className="App-logo" alt="logo"/>
-                    <p>
-                        Hi my name is {this.state.name.firstName} {this.state.name.lastName}
-                        I work at {this.state.company}!
-                    </p>
-                   <button onClick={() => {
-                       this.setState(
-                           (state, props) => {
-                               return {
-                                   name: {
-                                       firstName: 'Ira',
-                                       lastName: 'Korobtsova'
-                                   }
-                               }
-                           },
-                           () => {
-                               console.log(this.state)
-                           }
-                       )
-                   }}>Change Name</button>
-                </header>
+                {
+                    this.state.monsters.map((monster, index) => {
+                        return (
+                            <div key={monster.id} id={'monster' + index}>
+                                <h1 className="monsterHeading">{monster.name}</h1>
+                            </div>
+                        )
+                    })
+                }
             </div>
         );
     }
