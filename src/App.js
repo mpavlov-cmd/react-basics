@@ -3,25 +3,27 @@ import './App.css';
 
 class App extends Component {
 
-   constructor(props) {
-       super(props);
+   constructor() {
+       super();
 
        this.state = {
-           monsters: [
-               {
-                   id: 1,
-                   name: 'Max',
-               },
-               {
-                   id: 2,
-                   name: 'Ira',
-               },
-               {
-                   id: 3,
-                   name: 'Val'
-               }
-           ]
+          monsters: []
        }
+   }
+
+    // Will be called twice in case <React.StrictMode> is used
+    componentDidMount() {
+       // Fetch returns a promise
+       fetch('https://jsonplaceholder.typicode.com/users')
+           .then((response) => response.json())
+           .then((users) => this.setState(
+               () => {
+                   return { monsters: users }
+               },
+               () => {
+                   console.log(this.state)
+               }
+           ))
    }
 
     render() {
