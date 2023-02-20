@@ -1,31 +1,40 @@
-import { Component } from "react";
+import {Component} from "react";
 import './App.css';
 
 class App extends Component {
 
-   constructor() {
-       super();
+    // Called as a first thing for any JS class
+    constructor() {
+        super();
 
-       this.state = {
-          monsters: []
-       }
-   }
+        this.state = {
+            monsters: []
+        }
+    }
 
     // Will be called twice in case <React.StrictMode> is used
+    // Otherwise called only once after INITIAL render
     componentDidMount() {
-       // Fetch returns a promise
-       fetch('https://jsonplaceholder.typicode.com/users')
-           .then((response) => response.json())
-           .then((users) => this.setState(
-               () => {
-                   return { monsters: users }
-               },
-               () => {
-                   console.log(this.state)
-               }
-           ))
-   }
+        // Fetch returns a promise
+        fetch('https://jsonplaceholder.typicode.com/users')
+            .then((response) => response.json())
+            .then((users) => this.setState(
+                () => {
+                    return {monsters: users}
+                },
+                () => {
+                    console.log(this.state)
+                }
+            ))
+    }
 
+    // Called after constructor and before render evey time
+    static getDerivedStateFromProps() {
+        console.log("Get Derived State From Props")
+        return null;
+    }
+
+    // Called after getDerivedStateFromProps and any time after state changed
     render() {
         return (
             <div className="App">
