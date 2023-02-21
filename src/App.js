@@ -1,75 +1,56 @@
-import {Component} from "react";
+import {useState, useEffect} from "react";
 import './App.css';
 import CardList from "./components/card-list/card-list.component";
 import SearchBox from "./components/search-box/search-box.component";
 
-class App extends Component {
+const App = () => {
 
-    // Called as a first thing for any JS class
-    constructor() {
-        super();
+    // useSate contains value and setValue function inside of array and accepts an initial value as an argument
+    // array destructure allows to assign array values to the variables
+    // In case functional component needs to store multiple state variables, useState should be used multiple times
+    // useState holds only one state property
+    const [searchField, setSearchField] = useState('');
+    const [monsters, setSetMonsters] = useState([]);
+    const [filteredMonsters, setFilteredMonsters] = useState(monsters);
 
-        this.state = {
-            monsters: [],
-            searchField: ''
-        }
 
-        console.log("constructor")
+    // Use effect takes 2 arguments - a callback and an array of dependency
+    // Callback function will run first time the component function is called
+    // Then during every re-render the callback or effect function will run only if values of dependency array change
+    useEffect(
+        () => {
+            fetch('https://jsonplaceholder.typicode.com/users')
+                .then((response) => response.json())
+                .then((users) => setSetMonsters(users));
+        },
+        // Empty array is passed because we never want to call fetch after initial load
+        []
+    )
+
+    // Update filtered monsters only when search field changes or monsters changes
+    useEffect(
+        () => {
+            const newFilteredMonsters = monsters.filter((value) => value.name.toLowerCase().includes(searchField));
+            setFilteredMonsters(newFilteredMonsters);
+        },
+        [monsters, searchField]
+    )
+
+    const onSearchChange = (event) => {
+        setSearchField(event.target.value.toLowerCase());
     }
 
-    // Will be called twice in case <React.StrictMode> is used
-    // Otherwise called only once after INITIAL render
-    componentDidMount() {
-        console.log("componentDidMount")
-
-        // Fetch returns a promise
-        fetch('https://jsonplaceholder.typicode.com/users')
-            .then((response) => response.json())
-            .then((users) => this.setState(
-                () => {
-                    return {monsters: users}
-                }
-            ))
-    }
-
-    // Called after constructor and before render evey time
-    static getDerivedStateFromProps() {
-        console.log("getDerivedStateFromProps")
-        return null;
-    }
-
-    // For performance’s sake anonymous functions should not be defined inside or render method
-    onSearchChange = (event) => {
-        this.setState(() => {
-            return {
-                searchField: event.target.value.toLowerCase()
-            }
-        }, () => console.log(this.state))
-    }
-
-    // Called after getDerivedStateFromProps and any time after state changed
-    render() {
-        console.log("render")
-
-        // Assign state properties to local variables to shorten the code
-        const {monsters, searchField} = this.state;
-        const {onSearchChange} = this;
-
-        const filteredMonsters = monsters
-            .filter((value) => value.name.toLowerCase().includes(searchField))
-
-        return (
-            <div className="App">
-                <h1 className='appTitle'>Monsters Rolodex</h1>
-                <SearchBox
-                    searchPlaceholder='search monsters'
-                    className='monstersSearchBox'
-                    onChangeHandler={onSearchChange}
-                />
-                <CardList monsters = {filteredMonsters} />
-            </div>
-        );
-    }
+    return (
+        <div className="App">
+            <h1 className='appTitle'>Monsters Rolodex</h1>
+            <SearchBox
+                searchPlaceholder='search monsters'
+                className='monstersSearchBox'
+                onChangeHandler={onSearchChange}
+            />
+            <CardList monsters = {filteredMonsters} />
+        </div>
+    )
 }
 
 export default App;
