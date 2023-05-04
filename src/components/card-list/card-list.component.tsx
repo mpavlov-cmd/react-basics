@@ -1,14 +1,20 @@
 import Card from "../card/card.component";
 import './card-list.styles.css'
+import {Monster} from "../../App";
 
-const CardList = ({monsters}) =>
+
+type CardListProps = {
+    monsters: Monster[],
+}
+
+const CardList = ({monsters}: CardListProps) =>
     (
         // Component mast have a parent tag
         <div className='cardList'>
             {
                 monsters.map((monster, index) => {
                     return (
-                        <Card key={monster.id} item={monster} index={index}/>
+                        <Card key={monster.id} monster={monster} index={index}/>
                     )
                 })
             }
